@@ -17,14 +17,17 @@ import {
 } from '~src/Store/Slice/settingSlicer';
 import { useAppDispatch } from '~src/Store/store';
 
-export const Setting: React.FC = () => {
-	const [opened, setOpened] = useState(false);
+type props = {
+	open: boolean;
+	close: () => void;
+};
+export const Setting: React.FC<props> = ({ open, close }) => {
 	const [bgInput, setBgInput] = useState('');
 
 	const dispatch = useAppDispatch();
 	const handleApplyUrl = () => {
 		dispatch(setBackgroundImage(bgInput));
-		setOpened(false);
+		close();
 	};
 
 	const handleFileUpload = (file: File | null) => {
@@ -33,7 +36,7 @@ export const Setting: React.FC = () => {
 			reader.onload = (e) => {
 				if (e.target?.result) {
 					dispatch(setBackgroundImage(e.target.result as string));
-					setOpened(false);
+					close();
 				}
 			};
 			reader.readAsDataURL(file);
@@ -43,44 +46,37 @@ export const Setting: React.FC = () => {
 	const handleReset = () => {
 		dispatch(resetBackgroundImage());
 		setBgInput('');
-		setOpened(false);
+		close();
 	};
 
 	return (
-		<>
-			<Flex align={'flex-end'}>
-				<Card style={{ cursor: 'pointer' }} onClick={() => setOpened(true)}>
-					<IoSettings />
-				</Card>
+		<Modal
+			opened={open}
+			onClose={() => close()}
+			title="Custom Background"
+			centered>
+			<Flex direction="column" gap="md">
+				<TextInput
+					placeholder="Enter Image URL (e.g., https://...)"
+					value={bgInput}
+					onChange={(e) => setBgInput(e.target.value)}
+				/>
+				<Button onClick={handleApplyUrl} disabled={!bgInput}>
+					Apply URL
+				</Button>
+
+				<Typography style={{ textAlign: 'center' }}>OR</Typography>
+
+				<FileInput
+					placeholder="Upload an image or video from your PC"
+					accept="image/*,video/*"
+					onChange={handleFileUpload}
+				/>
+
+				<Button color="red" variant="outline" onClick={handleReset}>
+					Reset to Default Gradient
+				</Button>
 			</Flex>
-			<Modal
-				opened={opened}
-				onClose={() => setOpened(false)}
-				title="Custom Background"
-				centered>
-				<Flex direction="column" gap="md">
-					<TextInput
-						placeholder="Enter Image URL (e.g., https://...)"
-						value={bgInput}
-						onChange={(e) => setBgInput(e.target.value)}
-					/>
-					<Button onClick={handleApplyUrl} disabled={!bgInput}>
-						Apply URL
-					</Button>
-
-					<Typography style={{ textAlign: 'center' }}>OR</Typography>
-
-					<FileInput
-						placeholder="Upload an image or video from your PC"
-						accept="image/*,video/*"
-						onChange={handleFileUpload}
-					/>
-
-					<Button color="red" variant="outline" onClick={handleReset}>
-						Reset to Default Gradient
-					</Button>
-				</Flex>
-			</Modal>
-		</>
+		</Modal>
 	);
 };

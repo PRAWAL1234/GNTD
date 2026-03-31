@@ -32,7 +32,7 @@ export const FavoritesApp: React.FC = () => {
 
 	return (
 		<>
-			<Container>
+			<Container mt="md">
 				<Card h={300} w={340}>
 					<Flex gap={'lg'} direction={'column'} h="100%">
 						<Flex justify={'space-between'} align={'center'}>
