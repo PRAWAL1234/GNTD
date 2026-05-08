@@ -114,8 +114,8 @@ export const Weather: React.FC = () => {
 	return (
 		<Container mt="md">
 			<Card w={350} p={'md'}>
-				<Flex gap="lg" align={'center'} justify="center">
-					<Group gap="lg" justify="start" wrap="nowrap">
+				<Flex gap="lg" align={'center'} justify="space-evenly">
+					<Group gap="lg" justify="space-evenly" wrap="nowrap">
 						{loading ? (
 							<Skeleton height={30} width={30} circle />
 						) : (
